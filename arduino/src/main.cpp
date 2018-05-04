@@ -35,6 +35,13 @@ void writedata(uint16_t data)
     digitalWrite(latchPin, HIGH);
 }
 
+void reportToSerial()
+{
+	if (HIGH==state)
+		Serial.println("CLOSED");
+	else
+		Serial.println("OPEN");
+}
 
 void setup()
 {
@@ -47,6 +54,7 @@ void setup()
 
 	// determine initial state
 	state = digitalRead(inputPin);
+	reportToSerial();
 	uint16_t d;
 	if (state == HIGH)
 		d = LED_1_RED | LED_2_RED | LED_3_RED | LED_4_RED;
@@ -75,14 +83,13 @@ void setup()
 
 
 void loop() {
-
 	delay(500);
 	int newstate = digitalRead(inputPin);
 	if (newstate != state)
 	{
+		reportToSerial();
 		if (newstate == LOW)
 		{
-			Serial.println("CLOSED");
 			writedata(LED_1_GREEN | LED_2_RED   | LED_3_RED   | LED_4_RED);
 			delay(500);
 			writedata(LED_1_GREEN | LED_2_GREEN | LED_3_RED   | LED_4_RED);
@@ -93,7 +100,6 @@ void loop() {
 		}
 		else
 		{
-			Serial.println("OPEN");
 			writedata(LED_1_RED | LED_2_GREEN   | LED_3_GREEN   | LED_4_GREEN);
 			delay(500);
 			writedata(LED_1_RED | LED_2_RED | LED_3_GREEN   | LED_4_GREEN);
