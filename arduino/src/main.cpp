@@ -51,15 +51,16 @@ void setup()
 	pinMode(dataPin, OUTPUT);
 
 	pinMode(inputPin, INPUT_PULLUP);
-
+	delay(10);
 	// determine initial state
 	state = digitalRead(inputPin);
-	reportToSerial();
 	uint16_t d;
 	if (state == HIGH)
 		d = LED_1_RED | LED_2_RED | LED_3_RED | LED_4_RED;
 	else
 		d = LED_1_GREEN | LED_2_GREEN | LED_3_GREEN | LED_4_GREEN;
+
+	reportToSerial();
 
 	// flicker a few times
 	for (int i=0;i<5;i++)
@@ -87,8 +88,9 @@ void loop() {
 	int newstate = digitalRead(inputPin);
 	if (newstate != state)
 	{
+		state = newstate;
 		reportToSerial();
-		if (newstate == LOW)
+		if (state == LOW)
 		{
 			writedata(LED_1_GREEN | LED_2_RED   | LED_3_RED   | LED_4_RED);
 			delay(500);
@@ -109,7 +111,7 @@ void loop() {
 			writedata(LED_1_RED | LED_2_RED | LED_3_RED | LED_4_RED);
 		}
 	}
-	state = newstate;
+
 
 
 
